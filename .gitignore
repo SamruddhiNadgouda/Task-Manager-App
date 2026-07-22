@@ -1,0 +1,3 @@
+frontend/node_modules/
+backend/TaskManager.API/bin/
+backend/TaskManager.API/obj/Debug/
