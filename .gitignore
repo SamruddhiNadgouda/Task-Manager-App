@@ -1,3 +1,15 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+
+# Node
 frontend/node_modules/
-backend/TaskManager.API/bin/
-backend/TaskManager.API/obj/Debug/
+frontend/dist/
+
+# Env/secrets
+frontend/.env
+*.user
+
+# OS
+.vs/
+.DS_Store
