@@ -51,5 +51,4 @@ task-manager/
 ## Next Steps to Extend
 - Add task filtering/sorting on the dashboard
 - Add pagination if task lists grow large
-- Add a "forgot password" flow
 - Write a few unit tests (xUnit for backend, React Testing Library for frontend) — good to mention in interviews
