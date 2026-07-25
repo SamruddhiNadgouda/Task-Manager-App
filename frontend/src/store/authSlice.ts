@@ -57,11 +57,13 @@ export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (payload: { email: string }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosClient.post<{ message: string }>(
-        "/auth/forgot-password",
-        payload
-      );
-      return data.message;
+      const { data } = await axiosClient.post<{
+        message: string;
+        resetLink?: string;
+        name?: string;
+        email?: string;
+      }>("/auth/forgot-password", payload);
+      return data;
     } catch (err: any) {
       return rejectWithValue(err.response?.data?.message || "Something went wrong");
     }
@@ -92,10 +94,6 @@ const authSlice = createSlice({
       state.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-    },
-    clearAuthMessage(state) {
-      state.message = null;
-      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -131,9 +129,12 @@ const authSlice = createSlice({
         state.error = null;
         state.message = null;
       })
-      .addCase(forgotPassword.fulfilled, (state, action: PayloadAction<string>) => {
+      .addCase(forgotPassword.fulfilled, (state, action) => {
         state.status = "idle";
-        state.message = action.payload;
+
+
+        
+        state.message = action.payload.message;
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.status = "failed";
@@ -155,5 +156,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, clearAuthMessage } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

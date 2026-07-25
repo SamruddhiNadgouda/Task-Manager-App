@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\LENOVO\\Downloads\\Task-Manager-App\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj": {}
+    "D:\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\LENOVO\\Downloads\\Task-Manager-App\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj": {
+    "D:\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\LENOVO\\Downloads\\Task-Manager-App\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj",
+        "projectUniqueName": "D:\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj",
         "projectName": "TaskManager.API",
-        "projectPath": "C:\\Users\\LENOVO\\Downloads\\Task-Manager-App\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj",
+        "projectPath": "D:\\Task-Manager-App\\backend\\TaskManager.API\\TaskManager.API.csproj",
         "packagesPath": "C:\\Users\\LENOVO\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\LENOVO\\Downloads\\Task-Manager-App\\Task-Manager-App\\backend\\TaskManager.API\\obj\\",
+        "outputPath": "D:\\Task-Manager-App\\backend\\TaskManager.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\LENOVO\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -49,6 +49,10 @@
             "BCrypt.Net-Next": {
               "target": "Package",
               "version": "[4.0.3, )"
+            },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.17.0, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",

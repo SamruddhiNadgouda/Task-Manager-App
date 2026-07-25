@@ -264,6 +264,11 @@ textarea.input:focus {
   color: var(--color-success);
 }
 
+.alert.is-hiding {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 /* ---------- Task form ---------- */
 .task-form-row {
   display: flex;

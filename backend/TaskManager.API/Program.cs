@@ -21,18 +21,26 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<JwtService>();
 
-// Dev-mode email sender that logs the reset link to the console instead of sending
-// a real email. Replace with a real IEmailService implementation before deploying.
-builder.Services.AddScoped<IEmailService, ConsoleEmailService>();
-
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins(
-                builder.Configuration["Frontend:Url"] ?? "http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        if (builder.Environment.IsDevelopment())
+        {
+            // Defense in depth: even with the port pinned above, accept any
+            // localhost/127.0.0.1 origin in dev so this never silently breaks again.
+            policy.SetIsOriginAllowed(origin =>
+                    Uri.TryCreate(origin, UriKind.Absolute, out var uri) &&
+                    (uri.Host == "localhost" || uri.Host == "127.0.0.1"))
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
+        else
+        {
+            policy.WithOrigins(builder.Configuration["Frontend:Url"] ?? "http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        }
     });
 });
 
@@ -55,9 +63,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-var app = builder.Build();// It says "Everything is registered. Build the actual application."
+var app = builder.Build();
 
-app.UseHttpsRedirection();
+// No HTTPS redirect: the frontend calls http://localhost:5000 directly, and without
+// a launchSettings.json here, forcing a redirect to .NET's default HTTPS listener
+// fails silently if that dev certificate isn't trusted locally.
+// app.UseHttpsRedirection();
+
 app.UseCors("AllowFrontend");
 app.UseAuthentication(); //This checks the JWT token before protected requests.
 app.UseAuthorization(); //This decides: Is the user allowed? Which APIs can they access?
