@@ -14,16 +14,14 @@ public class AuthController : ControllerBase
 {
     private readonly AppDbContext _db;
     private readonly JwtService _jwt;
-    private readonly IEmailService _email;
     private readonly IConfiguration _config;
 
     private const int ResetTokenValidityMinutes = 30;
 
-    public AuthController(AppDbContext db, JwtService jwt, IEmailService email, IConfiguration config)
+    public AuthController(AppDbContext db, JwtService jwt, IConfiguration config)
     {
         _db = db;
         _jwt = jwt;
-        _email = email;
         _config = config;
     }
 
@@ -62,16 +60,12 @@ public class AuthController : ControllerBase
     [HttpPost("forgot-password")]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest req)
     {
-        // Always return the same generic response whether or not the email exists,
-        // so this endpoint can't be used to discover which emails are registered.
-        const string genericResponse = "If that email is registered, a reset link has been sent.";
+        const string genericResponse = "If that email is registered, a reset link has been generated.";
 
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == req.Email);
         if (user is null)
             return Ok(new { message = genericResponse });
 
-        // Generate a random raw token, email it to the user, but only store its hash.
-        // This mirrors how we never store the plaintext password.
         var rawToken = GenerateRawToken();
         user.ResetTokenHash = HashToken(rawToken);
         user.ResetTokenExpiresAt = DateTime.UtcNow.AddMinutes(ResetTokenValidityMinutes);
@@ -79,9 +73,16 @@ public class AuthController : ControllerBase
 
         var frontendUrl = _config["Frontend:Url"] ?? "http://localhost:5173";
         var resetLink = $"{frontendUrl}/reset-password?token={rawToken}";
-        await _email.SendPasswordResetEmailAsync(user.Email, user.Name, resetLink);
 
-        return Ok(new { message = genericResponse });
+        // The raw link is returned to the browser so it can hand it to EmailJS —
+        // this endpoint no longer sends the email itself.
+        return Ok(new
+        {
+            message = genericResponse,
+            resetLink,
+            name = user.Name,
+            email = user.Email
+        });
     }
 
     [HttpPost("reset-password")]
